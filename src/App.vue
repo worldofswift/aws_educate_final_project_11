@@ -1,28 +1,78 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
+      <ul>
+          <template v-for="(star, index) in stars">
+              <star
+                      :isEnabled="star.isEnabled"
+                      :key="index"
+                      :id="index"
+                      :forceHighlighted="star.forceHighlighted"
+                      @didHoverStarWithID="didHoverStar"
+                      @didUnHoverStarWithID="didUnhoverStar"
+                      @didClickedStarWithID="didClickStar"
+              >
+
+              </star>
+          </template>
+      </ul>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
+import Star from './components/Star'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
+    Star
+  },
+    data() {
+      return {
+          stars: [
+                {isEnabled: false, forceHighlighted: false},
+                {isEnabled: false, forceHighlighted: false},
+                {isEnabled: false, forceHighlighted: false},
+                {isEnabled: false, forceHighlighted: false},
+                {isEnabled: false, forceHighlighted: false},
+            ]
+      }
+    },
+
+    methods: {
+        didHoverStar(id) {
+            const numbers = [...Array(id + 1).keys()]
+            numbers.forEach(index => {
+                this.stars[index].forceHighlighted = true
+            })
+        },
+
+        didUnhoverStar(id) {
+            const numbers = [...Array(id + 1).keys()]
+            numbers.forEach(index => {
+                this.stars[index].forceHighlighted = false
+            })
+        },
+
+        didClickStar(id) {
+            this.restoreDefaults()
+            const numbers = [...Array(id + 1).keys()]
+            numbers.forEach(index => {
+                this.stars[index].isEnabled = true
+            })
+        },
+
+        restoreDefaults() {
+            this.stars.forEach(item => {
+                item.isEnabled = false
+                item.forceHighlighted = false
+            })
+        }
+    }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+    ul {
+        display: flex;
+    }
 </style>
